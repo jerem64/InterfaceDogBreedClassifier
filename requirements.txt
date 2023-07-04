@@ -1,0 +1,3 @@
+tkinter
+ultralytics==8.0.112
+pyyaml==6.0

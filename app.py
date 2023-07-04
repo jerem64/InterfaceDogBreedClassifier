@@ -26,20 +26,21 @@ def load_image():
     global image
     global image_displayed
     
-    # Ouvrir une boîte de dialogue pour sélectionner un fichier image
+    # Open a box to choose a picture
     file_path = filedialog.askopenfilename()
     
-    # Charger l'image
+    # Load the image
     image = cv2.imread(file_path)
 
-    # Afficher l'image dans la fenêtre
+    # display the image
     image_displayed = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image_displayed = Image.fromarray(image_displayed)
-    image_displayed.thumbnail((400, 400))  # Redimensionner l'image pour l'affichage
+    image_displayed.thumbnail((400, 400))  #resizing the image
     image_tk = ImageTk.PhotoImage(image_displayed)
     image_label.configure(image=image_tk)
     image_label.image = image_tk
 
+#prediction with the model trained on the dataset prepared without yolo
 def predict_image():
     global image
     global image_pretreated 
@@ -54,9 +55,10 @@ def predict_image():
     
     predicted_label = label_encoder.inverse_transform(np.argmax(prediction, axis=-1))
 
-    # Mettre à jour le texte de la fenêtre avec la prédiction
+    # Prediction text
     text_label.set("Prédiction : " + predicted_label[0])
 
+#prediction with the model trained on the dataset prepared with yolo
 def predict_image_yolo():
     global image
     global image_pretreated 
@@ -71,7 +73,8 @@ def predict_image_yolo():
     
     predicted_label = label_encoder.inverse_transform(np.argmax(prediction, axis=-1))
 
-    # Mettre à jour le texte de la fenêtre avec la prédiction
+    
+    # Prediction text
     text_label.set("Prédiction : " + predicted_label[0])
 
 def resize_image_square(image, size):
@@ -128,16 +131,14 @@ label_encoder_crop = joblib.load('prediction_files/label_crop_encoder.joblib')
 
 
 
-
+#User Interface
 window = Tk()
 window.geometry("800x600")
 window.title("Prédiction de la race d'un chien")
 
-# Créer un bouton pour sélectionner un fichier image
 file_button = Button(window, text="Sélectionner une image", command=load_image)
 file_button.pack(pady=10)
 
-# Création d'un conteneur de type Frame
 frame = Frame(window)
 frame.pack()
 
@@ -147,12 +148,10 @@ button1.pack(padx=10)
 button2 = Button(frame, text="ResNet & YOLO", command=predict_image_yolo)
 button2.pack(padx=10)
 
-# Créer une zone de texte pour afficher la prédiction
 text_label = StringVar()
 prediction_label = Label(window, textvariable=text_label)
 prediction_label.pack(pady=10)
 
-# Créer une zone pour afficher l'image
 image_label = Label(window)
 image_label.pack()
 
